@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FinborneGenericCache.Core\FinborneGenericCache.Core.csproj" />
     <ProjectReference Include="..\FinborneGenericCache\FinborneGenericCache.csproj" />
   </ItemGroup>
 

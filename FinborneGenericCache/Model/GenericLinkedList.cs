@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,50 +16,79 @@ namespace FinborneGenericCache.Model
         public GenericLinkedList(K key, V value)
         {
             var node = new GenericNode<K,V>(key, value);
-            Head = node;
-            Tail = node;
+            //Head = node;
+            //Tail = node;
         }
 
-        public void AddNode(GenericNode<K, V> node)
+        public GenericNode<K, V> AddNode(GenericNode<K, V> node)
         {
             lock (lockObject)
             {
-                //GenericNode<K, V> current = Head;
+                if (Head == null && Tail == null)
+                {
+                    Head = node;
+                    Tail = node;
+                }
+                else
+                {
+                    Head.Previous = node;
+                    Head.Previous.Value = node.Value;
+                    Head.Previous.Key = node.Key;
+                    node.Next = Head;
+                    Head = node;
+                }
+                
+                return Head;
+            }
 
-                //while (current.Next != null)
-                //{
-                //    current = current.Next;
-                //}
+        }
 
-                //current.Next = node;
-                //current.Next.Value = node.Value;
-                //current.Next.Key = node.Key;
-                //node.Previous = current;
-                //Tail = node;
-
+        public GenericNode<K, V> UpdateNode(GenericNode<K, V> node)
+        {
+            lock (lockObject)
+            {
+                if(node == Tail)
+                {
+                    Tail = node.Previous;
+                    node.Previous.Next = null;
+                    node.Previous = null;
+                }
+                else
+                {
+                    node.Previous.Next = node.Next;
+                    node.Next.Previous = node.Previous;
+                }
+                
                 Head.Previous = node;
                 Head.Previous.Value = node.Value;
                 Head.Previous.Key = node.Key;
                 node.Next = Head;
                 Head = node;
+                return Head;
             }
         }
 
-        //public void RemoveNode()
-        //{
-        //    lock (lockObject)
-        //    {
-        //        Tail = Tail.Previous;
-        //        Tail.Next = null;
-        //    }
-        //}
-
-        public void RemoveNode(GenericNode<K, V> node)
+        public GenericNode<K, V> PopTailNode()
         {
+            var target = Tail;
+            lock (lockObject)
+            {
+                Tail = Tail.Previous;
+                Tail.Next = null;
+            }
+            return target;
+        }
+
+        public bool RemoveNode(GenericNode<K, V> node)
+        {
+            if (node.Key.Equals(Head.Key))
+                return false;
+
             node.Previous.Next = node.Next;
             node.Next.Previous = node.Previous;
             node.Next = null;
             node.Previous = null;
+            return true;
         }
 
     }
