@@ -9,8 +9,8 @@ namespace FinborneGenericCache.Interface
 {
     public interface IGenericCache<K,V>
     {
-        public Task<Tuple<bool, string>> Add(K key, V value);
-        public Task<GenericNode<K, V>> Get(K key);
+        public Task<Tuple<bool, string>> AddAsync(K key, V value);
+        public Task<GenericNode<K, V>> GetAsync(K key);
     }
 
 }

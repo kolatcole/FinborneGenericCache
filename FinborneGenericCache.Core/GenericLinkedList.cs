@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FinborneGenericCache.Interface;
+using FinborneGenericCache.Model;
 
-namespace FinborneGenericCache.Model
+namespace FinborneGenericCache.Core
 {
-    public class GenericLinkedList<K,V>
+    public class GenericLinkedList<K,V>: IGenericLinkedList<K, V>
     {
         private GenericNode<K, V> Head;
         private GenericNode<K, V> Tail;
@@ -51,13 +47,15 @@ namespace FinborneGenericCache.Model
         {
             lock (lockObject)
             {
-                if (node == Tail)
+                // if it's the last node
+                if (node == Tail && node != Head)
                 {
                     Tail = node.Previous;
                     node.Previous.Next = null;
                     node.Previous = null;
                 }
-                else
+                // if it's a middle node
+                else if(node != Tail && node != Head)
                 {
                     node.Previous.Next = node.Next;
                     node.Next.Previous = node.Previous;
