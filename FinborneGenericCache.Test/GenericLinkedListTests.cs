@@ -16,9 +16,7 @@ namespace FinborneGenericCache.Test
 
         [SetUp]
         public void Setup()
-        {
-            
-        }
+        {}
 
         [Test]
         public void AddNode_ShouldAddNodeToEmptyLinkedList()

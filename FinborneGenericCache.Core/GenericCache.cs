@@ -28,40 +28,38 @@ namespace FinborneGenericCache.Core
 
         public Task<Tuple<bool,string>> AddAsync(K key, V value)
         {
-
-            // Add when limit is not reach
-
             StringBuilder action=new StringBuilder();
-
             var node = new GenericNode<K, V>(key, value);
 
             lock (lockObject)
             {
-
+                // Evict the oldest item when cache is full
                 if (DictionaryStore.Count >= this.Config.Limit)
                 {
                     var lruNode = this.LinkedList.PopOrPeekTailNode();
                     if (this.DictionaryStore.TryRemove(lruNode.Key, out var removedNode))
                     {
-                        this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache due being filled up");
-                        action.Append($"Item with Key {lruNode.Key} was removed from cache due being filled up");
+                        this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached \n");
+                        action.AppendLine($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached");
                     }
                 }
 
                 var wasAdded = DictionaryStore.TryAdd(key, node);
+                
+                // Should not take an item that has the same key with an existing item
                 if (!wasAdded)
                 {
-                    this.Logger?.LogInformation($"Item with Key {key} was already exist in cache.");
-                    action.Append($"Item with Key {key} was already exist in cache.");
+                    this.Logger?.LogInformation($"Item with Key {key} already exist in cache.\n");
+                    action.AppendLine($"Item with Key {key} already exist in cache.");
                     return Task.FromResult(new Tuple<bool, string>(false, action.ToString()));
                 }
 
                 var fullNode = this.LinkedList.AddNode(node);
                 DictionaryStore.TryUpdate(fullNode.Key, fullNode, node);
 
-                // I need a full node object returned here to update the dictionary node with prev and next
-                this.Logger?.LogInformation($"Item with Key {key} was added to cache.");
-                action.Append($"Item with Key {key} was added to cache.");
+                // Update the node so that it has next and pre
+                this.Logger?.LogInformation($"Item with Key {key} was added to cache.\n");
+                action.AppendLine($"Item with Key {key} was added to cache.");
                 return Task.FromResult(new Tuple<bool, string>(wasAdded, action.ToString()));
             }
             
@@ -76,8 +74,6 @@ namespace FinborneGenericCache.Core
                 // to represent the last used node
                 lock (lockObject)
                 {
-
-                    // if(this.LinkedList.RemoveNode(retrievedItem))
                     this.LinkedList.UpdateNode(retrievedItem);
                 }
 
