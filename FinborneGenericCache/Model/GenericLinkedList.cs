@@ -16,8 +16,6 @@ namespace FinborneGenericCache.Model
         public GenericLinkedList(K key, V value)
         {
             var node = new GenericNode<K,V>(key, value);
-            //Head = node;
-            //Tail = node;
         }
         public GenericLinkedList()
         {
@@ -83,22 +81,6 @@ namespace FinborneGenericCache.Model
                 Tail.Next = null;
             }
             return target;
-        }
-
-        public bool RemoveNode(GenericNode<K, V> node)
-        {
-            
-            if (node.Key.Equals(Head.Key))
-                return false;
-
-            lock (lockObject)
-            {
-                node.Previous.Next = node.Next;
-                node.Next.Previous = node.Previous;
-                node.Next = null;
-                node.Previous = null;
-            }
-            return true;
         }
 
     }

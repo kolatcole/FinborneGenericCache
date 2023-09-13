@@ -40,7 +40,7 @@ namespace FinborneGenericCache.Core
 
                 if (DictionaryStore.Count >= this.Config.Limit)
                 {
-                    var lruNode = this.LinkedList.PopTailNode();
+                    var lruNode = this.LinkedList.PopOrPeekTailNode();
                     if (this.DictionaryStore.TryRemove(lruNode.Key, out var removedNode))
                     {
                         this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache due being filled up");

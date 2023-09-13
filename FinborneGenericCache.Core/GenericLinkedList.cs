@@ -12,8 +12,6 @@ namespace FinborneGenericCache.Core
         public GenericLinkedList(K key, V value)
         {
             var node = new GenericNode<K,V>(key, value);
-            //Head = node;
-            //Tail = node;
         }
         public GenericLinkedList()
         {
@@ -24,6 +22,7 @@ namespace FinborneGenericCache.Core
         {
             lock (lockObject)
             {
+                // Add first node to linkedList
                 if (Head == null && Tail == null)
                 {
                     Head = node;
@@ -72,31 +71,20 @@ namespace FinborneGenericCache.Core
             
         }
 
-        public GenericNode<K, V> PopTailNode()
+        public GenericNode<K, V> PopOrPeekTailNode()
         {
             var target = Tail;
-            lock (lockObject)
+
+            // If linkedList has more than one node
+            if (Head!=Tail)
             {
-                Tail = Tail.Previous;
-                Tail.Next = null;
+                lock (lockObject)
+                {
+                    Tail = Tail.Previous;
+                    Tail.Next = null;
+                }
             }
             return target;
-        }
-
-        public bool RemoveNode(GenericNode<K, V> node)
-        {
-            
-            if (node.Key.Equals(Head.Key))
-                return false;
-
-            lock (lockObject)
-            {
-                node.Previous.Next = node.Next;
-                node.Next.Previous = node.Previous;
-                node.Next = null;
-                node.Previous = null;
-            }
-            return true;
         }
 
     }

@@ -11,7 +11,6 @@ namespace FinborneGenericCache.Interface
     {
         public GenericNode<K, V> AddNode(GenericNode<K, V> node);
         public GenericNode<K, V> UpdateNode(GenericNode<K, V> node);
-        public GenericNode<K, V> PopTailNode();
-        public bool RemoveNode(GenericNode<K, V> node);
+        public GenericNode<K, V> PopOrPeekTailNode();
     }
 }
