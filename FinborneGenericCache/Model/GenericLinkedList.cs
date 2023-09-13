@@ -19,8 +19,12 @@ namespace FinborneGenericCache.Model
             //Head = node;
             //Tail = node;
         }
+        public GenericLinkedList()
+        {
 
-        public GenericNode<K, V> AddNode(GenericNode<K, V> node)
+        }
+
+            public GenericNode<K, V> AddNode(GenericNode<K, V> node)
         {
             lock (lockObject)
             {

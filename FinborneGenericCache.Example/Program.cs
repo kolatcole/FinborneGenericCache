@@ -13,7 +13,11 @@ using FinborneGenericCache.Core;
 //dict.RemoveNode(node);
 //x = dict;
 
-var cache = new GenericCache<string, string>(4,"1","one");
+//var cache = new GenericCache<string, string>(4,"1","one");
+var config = new GenericCacheConfig();
+config.Limit = 4;
+var cache = new GenericCache<string, string>(config);
+cache.Add("1", "one");
 cache.Add("3", "three");  // head is 3, Tail is 1     3 -> 1
 cache.Add("2", "two");      // head is 2, Tail is 1   2 -> 3 -> 1
 

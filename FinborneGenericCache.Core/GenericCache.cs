@@ -8,18 +8,18 @@ namespace FinborneGenericCache.Core
 {
     public class GenericCache<K,V> : IGenericCache<K, V>
     {
-        private int Limit;
+        private readonly GenericCacheConfig Config;
         private readonly ConcurrentDictionary<K, GenericNode<K,V>>? DictionaryStore;
         private readonly GenericLinkedList<K, V> LinkedList;
 
-        public GenericCache(int limit, K key, V value)
+        public GenericCache(GenericCacheConfig config)
         {
-            this.Limit = limit;
             this.DictionaryStore = new ConcurrentDictionary<K, GenericNode<K, V>>();
-            this.LinkedList = new GenericLinkedList<K, V>(key, value);
-            var node = this.LinkedList.AddNode(new GenericNode<K, V>(key, value));
-            this.DictionaryStore.AddOrUpdate(key, node,
-                                                (key, oldValue) => node);
+            this.LinkedList = new GenericLinkedList<K, V>();
+            this.Config = config;
+            //var node = this.LinkedList.AddNode(new GenericNode<K, V>(key, value));
+            //this.DictionaryStore.AddOrUpdate(key, node,
+            //                                    (key, oldValue) => node);
 
 
             //this.DictionaryStore.AddOrUpdate(key, new GenericNode<K, V>(key, value),
@@ -41,7 +41,7 @@ namespace FinborneGenericCache.Core
 
             var node = new GenericNode<K, V>(key, value);
 
-            if (DictionaryStore.Count >= Limit)
+            if (DictionaryStore.Count >= this.Config.Limit)
             {
                 var lruNode = this.LinkedList.PopTailNode();
                 if (this.DictionaryStore.TryRemove(lruNode.Key, out var removedNode))
@@ -53,7 +53,7 @@ namespace FinborneGenericCache.Core
             var wasAdded = DictionaryStore.TryAdd(key, node);
             if (wasAdded)
             {
-                var fullNode = this.LinkedList.AddNode(node);
+                var fullNode = this.LinkedList.AddNode(node); 
                 DictionaryStore.TryUpdate(fullNode.Key, fullNode, node);
 
                 // I need a full node object returned here to update the dictionary node with prev and next
