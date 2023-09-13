@@ -1,10 +1,6 @@
 ﻿using FinborneGenericCache.Interface;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace FinborneGenericCache.Core
 {
@@ -12,9 +8,19 @@ namespace FinborneGenericCache.Core
     {
         public static IServiceCollection AddGenericCache<K,V>(this IServiceCollection services, GenericCacheConfig config)
         {
-            services.AddSingleton(config);
-            services.AddSingleton<IGenericCache<K,V>, GenericCache<K,V>>();
+
+            services.AddSingleton<IGenericCache<K, V>, GenericCache<K, V>>(provider =>
+            {
+                var cacheConfig = new GenericCacheConfig { Limit = 40 };
+                return new GenericCache<K,V>(cacheConfig, provider.GetService<ILogger<GenericCache<K,V>>>());
+            });
+
+
+            //services.AddSingleton(config);
+            //services.AddSingleton<IGenericCache<K,V>, GenericCache<K,V>>();
             return services;
         }
+
+        
     }
 }
