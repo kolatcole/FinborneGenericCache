@@ -3,32 +3,26 @@ using System.Collections.Concurrent;
 using System.Text;
 using FinborneGenericCache.Interface;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace FinborneGenericCache.Core
 {
     public class GenericCache<K,V> : IGenericCache<K, V>
     {
         private readonly GenericCacheConfig Config;
+        private readonly ILogger<GenericCache<K, V>> Logger;
         private readonly ConcurrentDictionary<K, GenericNode<K,V>>? DictionaryStore;
         private readonly GenericLinkedList<K, V> LinkedList;
 
-        public GenericCache(GenericCacheConfig config)
+        public GenericCache(GenericCacheConfig config, ILogger<GenericCache<K,V>> logger)
         {
+            if (config.Limit <= 0)
+                throw new ArgumentException("Cache limit must be greater than 0.", nameof(this.Config.Limit));
+            
+            this.Config = config;
+            this.Logger = logger;
             this.DictionaryStore = new ConcurrentDictionary<K, GenericNode<K, V>>();
             this.LinkedList = new GenericLinkedList<K, V>();
-            this.Config = config;
-            //var node = this.LinkedList.AddNode(new GenericNode<K, V>(key, value));
-            //this.DictionaryStore.AddOrUpdate(key, node,
-            //                                    (key, oldValue) => node);
-
-
-            //this.DictionaryStore.AddOrUpdate(key, new GenericNode<K, V>(key, value),
-            //                                    (key, oldValue) => new GenericNode<K, V>(key, value));
-            //var fullNode = this.LinkedList.AddNode(new GenericNode<K, V>(key, value));
-            //DictionaryStore.TryUpdate(fullNode.Key, fullNode, new GenericNode<K, V>(key, value));
-            //this.LinkedList = new GenericLinkedList<K, V>(key, value);
-
-
         }
 
 
@@ -46,6 +40,7 @@ namespace FinborneGenericCache.Core
                 var lruNode = this.LinkedList.PopTailNode();
                 if (this.DictionaryStore.TryRemove(lruNode.Key, out var removedNode))
                 {
+                    this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache due being filled up");
                     action.Append($"Item with Key {lruNode.Key} was removed from cache due being filled up");
                 }
             }
@@ -57,6 +52,7 @@ namespace FinborneGenericCache.Core
                 DictionaryStore.TryUpdate(fullNode.Key, fullNode, node);
 
                 // I need a full node object returned here to update the dictionary node with prev and next
+                this.Logger?.LogInformation($"Item with Key {key} was added to cache.");
                 action.Append($"Item with Key {key} was added to cache.");
                 return Task.FromResult(new Tuple<bool, string>(wasAdded, action.ToString()));
             }
