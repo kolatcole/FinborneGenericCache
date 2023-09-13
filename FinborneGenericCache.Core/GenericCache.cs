@@ -39,8 +39,8 @@ namespace FinborneGenericCache.Core
                     var lruNode = this.LinkedList.PopOrPeekTailNode();
                     if (this.DictionaryStore.TryRemove(lruNode.Key, out var removedNode))
                     {
-                        this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached \n");
-                        action.AppendLine($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached");
+                        this.Logger?.LogInformation($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached. \n");
+                        action.AppendLine($"Item with Key {lruNode.Key} was removed from cache beacuse the limit was reached.");
                     }
                 }
 
