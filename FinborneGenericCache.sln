@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinborneGenericCache.Core",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinborneGenericCache.Example", "FinborneGenericCache.Example\FinborneGenericCache.Example.csproj", "{2C6AA80D-59A6-40F0-9AA7-CC4B725DA161}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinborneGenericCache.Test", "FinborneGenericCache.Test\FinborneGenericCache.Test.csproj", "{CC5604D2-C6EF-40B6-BE60-544C800B1417}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2C6AA80D-59A6-40F0-9AA7-CC4B725DA161}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C6AA80D-59A6-40F0-9AA7-CC4B725DA161}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C6AA80D-59A6-40F0-9AA7-CC4B725DA161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC5604D2-C6EF-40B6-BE60-544C800B1417}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC5604D2-C6EF-40B6-BE60-544C800B1417}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC5604D2-C6EF-40B6-BE60-544C800B1417}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC5604D2-C6EF-40B6-BE60-544C800B1417}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
